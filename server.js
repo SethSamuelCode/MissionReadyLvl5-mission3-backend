@@ -42,6 +42,14 @@ app.post("/api/aiTest", async (req, resp) => {
 
   const AiResponse = await ai.models.generateContent({
     model: "gemini-2.0-flash-001",
+    config: {
+      responseMimeType: "text/plain",
+      systemInstruction: [
+        {
+          text: `you are a bird and you have to work "caw caw" into every line `,
+        },
+      ],
+    },
     contents: userInput,
   });
 
