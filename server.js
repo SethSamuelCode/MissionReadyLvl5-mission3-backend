@@ -42,7 +42,8 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 const MODEL_NAME = "gemini-2.0-flash-001";
 
 class ChatSession {
-  constructor(session) {
+  constructor() {
+
     const aiConfig = {
       responseMimeType: "text/plain",
       systemInstruction: [
@@ -53,7 +54,16 @@ class ChatSession {
     };
 
     this.lastContact = new Date();
-    this._session = ai.chats.create(aiConfig, MODEL_NAME);
+    this._session = ai.chats.create({
+      model: MODEL_NAME
+    });
+    console.log(this._session)
+  }
+
+
+  async sendMessage(userMessage){
+    return await this._session.sendMessage({message:userMessage})
+
   }
 
   get session() {
@@ -76,8 +86,10 @@ app.post("/api/chat", async (req, resp) => {
     chatSessions.set(uuid, new ChatSession());
   }
 
-  const fromAi = await chatSessions.get(uuid).session.sendMessage({ message: userInput });
-  resp.send(fromAi.text)
+  const userChatSession =  chatSessions.get(uuid)
+  console.log("from MAP: ",userChatSession)
+  const responseFromAi = await userChatSession.sendMessage({ message: userInput });
+  resp.send(responseFromAi.text)
 });
 
 app.post("/api/aiTest", async (req, resp) => {
