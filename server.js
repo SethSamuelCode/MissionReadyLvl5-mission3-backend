@@ -101,8 +101,20 @@ app.get("/api/uuid", (req, resp) => {
 
 // Chat endpoint: handles chat messages from clients
 app.post("/api/chat", async (req, resp) => {
-  const userInput = req.body.userInput;
-  const job = req.body.job;
+  // Check for empty payload
+  if(!req.body){
+    resp.status(400).send("please dont sent empty payloads")
+    return
+  }
+  // Check for missing UUID
+  if(!req.body.uuid){
+    resp.status(400).send("please include a UUID")
+    return
+  }
+
+  // Extract user input, job, and uuid from request body (default to empty string if missing)
+  const userInput = req.body.userInput? req.body.userInput:"";
+  const job = req.body.job?req.body.job:"";
   const uuid = req.body.uuid;
 
   // Create a new chat session if one doesn't exist for this uuid
