@@ -82,14 +82,32 @@ app.post("/api/chat", async (req, resp) => {
   const job = req.body.job;
   const uuid = req.body.uuid;
 
-  if (!chatSessions.has(uuid)) {
-    chatSessions.set(uuid, new ChatSession());
-  }
+  // if (!chatSessions.has(uuid)) {
+  //   chatSessions.set(uuid, new ChatSession());
+  // }
 
-  const userChatSession =  chatSessions.get(uuid)
-  console.log("from MAP: ",userChatSession)
-  const responseFromAi = await userChatSession.sendMessage({ message: userInput });
-  resp.send(responseFromAi.text)
+  // const userChatSession =  chatSessions.get(uuid)
+  // console.log("from MAP: ",userChatSession)
+  // const responseFromAi = await userChatSession.sendMessage({ message: userInput });
+  // resp.send(responseFromAi.text)
+    const aiConfig = {
+      responseMimeType: "text/plain",
+      systemInstruction: [
+        {
+          text: `you are a bird and you have to work "caw caw" into every line `,
+        },
+      ],
+    };
+
+  const chat=ai.chats.create({
+      model: MODEL_NAME,
+      config: aiConfig
+    })
+
+    const AIR = await chat.sendMessage({
+      message:userInput
+    })
+    resp.send(AIR.text)
 });
 
 app.post("/api/aiTest", async (req, resp) => {
