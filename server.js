@@ -1,4 +1,4 @@
-// npm i dotenv morgan express cors 
+// npm i dotenv morgan express cors
 
 // ------------------ SETUP AND INSTALL ----------------- //
 
@@ -9,11 +9,14 @@ const cors = require("cors"); // CORS middleware
 const PORT = process.env.SERVER_LISTEN_PORT; // Port from environment
 const assert = require("node:assert/strict"); // Assertion utility for debugging
 
+const { GoogleGenAI } = require( "@google/genai");
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 // --------------------- MIDDLEWARES -------------------- //
 
 const morgan = require("morgan"); // HTTP request logger
 app.use(morgan("dev")); // Log requests to console
-app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB. 
+app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 
 // Configure CORS to allow only specific origins
 const corsConfigs = {
@@ -33,6 +36,18 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 // ---------------------- FUNCTIONS --------------------- //
 
 // ----------------------- ROUTES ----------------------- //
+
+app.post("/api/aiTest", (req, resp) => {
+
+    ai.models.generateContent({
+      model: "gemini-2.0-flash-001",
+      contents: "Why is the sky blue?",
+    }).then((AiResponse)=>{
+      
+      console.log(AiResponse)
+      resp.send(AiResponse)
+    });
+});
 
 // Health check/test GET endpoint
 app.get("/test", (req, resp) => {
