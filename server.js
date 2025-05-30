@@ -13,6 +13,8 @@ const { GoogleGenAI} = require("@google/genai");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+const {v7: uuidv7} = require("uuid")
+
 // --------------------- MIDDLEWARES -------------------- //
 
 const morgan = require("morgan"); // HTTP request logger
@@ -78,6 +80,10 @@ class ChatSession {
 
 const chatSessions = new Map(); // Stores chat sessions by uuid
 // ----------------------- ROUTES ----------------------- //
+
+app.get("/api/uuid",(req,resp)=>{
+  resp.send(uuidv7())
+})
 
 // Chat endpoint: handles chat messages from clients
 app.post("/api/chat", async (req, resp) => {
