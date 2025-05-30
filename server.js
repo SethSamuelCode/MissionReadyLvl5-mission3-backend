@@ -9,11 +9,11 @@ const cors = require("cors"); // CORS middleware
 const PORT = process.env.SERVER_LISTEN_PORT; // Port from environment
 const assert = require("node:assert/strict"); // Assertion utility for debugging
 
-const { GoogleGenAI} = require("@google/genai");
+const { GoogleGenAI } = require("@google/genai");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-const {v7: uuidv7} = require("uuid")
+const { v7: uuidv7 } = require("uuid");
 
 // --------------------- MIDDLEWARES -------------------- //
 
@@ -55,35 +55,49 @@ class ChatSession {
       ],
     };
 
-    this.lastContact = new Date(); // Track last contact time
+    this.lastContact = Date.now(); // Track last contact time
     // Create a new chat session with Gemini AI
     this._session = ai.chats.create({
       model: MODEL_NAME,
-      config: aiConfig
-    })
+      config: aiConfig,
+    });
 
     // console.log("SESSION CREATION:",this._session)
   }
 
   // Send a message to the AI and return the response
-  async sendMessage(userMessage){
-    this.lastContact = new Date()
-    return await this._session.sendMessage({message:userMessage})
+  async sendMessage(userMessage) {
+    this.lastContact = Date.now();
+    return await this._session.sendMessage({ message: userMessage });
   }
 
-  // Getter for the underlying session, updates lastContact
-  get session() {
-    this.lastContact = new Date();
-    return this._session;
-  }
 }
 
 const chatSessions = new Map(); // Stores chat sessions by uuid
+
+const TIME_DELAY_IN_MS=1800000 //30mins
+// const TIME_DELAY_IN_MS = 10000;
+function cleanUpOldChats() {
+  if (!chatSessions.size) {
+    console.log("no chats to clear")
+    return;
+  }
+  chatSessions.forEach((chatSession, uuid) => {
+    // console.log(chatSession.lastContact," ",Date.now() -TIME_DELAY_IN_MS)
+    if (chatSession.lastContact < Date.now() - TIME_DELAY_IN_MS) {
+      chatSessions.delete(uuid);
+      console.log("cleared chat: ", uuid);
+    }
+  });
+}
+
+setInterval(cleanUpOldChats,TIME_DELAY_IN_MS)
+
 // ----------------------- ROUTES ----------------------- //
 
-app.get("/api/uuid",(req,resp)=>{
-  resp.send(uuidv7())
-})
+app.get("/api/uuid", (req, resp) => {
+  resp.send(uuidv7());
+});
 
 // Chat endpoint: handles chat messages from clients
 app.post("/api/chat", async (req, resp) => {
@@ -96,16 +110,16 @@ app.post("/api/chat", async (req, resp) => {
     chatSessions.set(uuid, new ChatSession(job));
   }
 
-  const currentChatSession = chatSessions.get(uuid)
+  const currentChatSession = chatSessions.get(uuid);
   // Log the incoming message
-  console.log(uuid,">",userInput)
+  console.log(uuid, ">", userInput);
   // Send the message to the AI and get the response
-  const AiResponse =  await currentChatSession._session.sendMessage({message: userInput})
+  const AiResponse = await currentChatSession._session.sendMessage({ message: userInput });
   // Log the AI's response
-  console.log(uuid,"<",AiResponse.text)
+  console.log(uuid, "<", AiResponse.text);
 
   // Send the AI's response back to the client
-  resp.send(AiResponse.text)
+  resp.send(AiResponse.text);
 });
 
 // Test endpoint for direct AI model call (not chat session)
