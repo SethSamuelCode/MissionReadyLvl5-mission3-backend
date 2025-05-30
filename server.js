@@ -9,14 +9,13 @@ const cors = require("cors"); // CORS middleware
 const PORT = process.env.SERVER_LISTEN_PORT; // Port from environment
 const assert = require("node:assert/strict"); // Assertion utility for debugging
 
-const { GoogleGenAI, Chat, Models } = require("@google/genai");
+const { GoogleGenAI} = require("@google/genai");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 // --------------------- MIDDLEWARES -------------------- //
 
 const morgan = require("morgan"); // HTTP request logger
-const send = require("send");
 app.use(morgan("dev")); // Log requests to console
 app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 
@@ -41,64 +40,69 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 
 const MODEL_NAME = "gemini-2.0-flash-001";
 
+// ChatSession class manages a single AI chat session
 class ChatSession {
-  constructor() {
-
+  constructor(jobTitle) {
+    // AI configuration for the chat session
     const aiConfig = {
       responseMimeType: "text/plain",
       systemInstruction: [
         {
-          text: `you are a bird and you have to work "caw caw" into every line `,
+          text: `you are a ${jobTitle} and you have to work this into every line `,
         },
       ],
     };
 
-    this.lastContact = new Date();
+    this.lastContact = new Date(); // Track last contact time
+    // Create a new chat session with Gemini AI
     this._session = ai.chats.create({
       model: MODEL_NAME,
       config: aiConfig
     })
 
-    console.log("SESSION CRETION:",this._session)
+    // console.log("SESSION CREATION:",this._session)
   }
 
-
+  // Send a message to the AI and return the response
   async sendMessage(userMessage){
+    this.lastContact = new Date()
     return await this._session.sendMessage({message:userMessage})
-
   }
 
+  // Getter for the underlying session, updates lastContact
   get session() {
     this.lastContact = new Date();
     return this._session;
   }
-
-
 }
 
-const chatSessions = new Map();
+const chatSessions = new Map(); // Stores chat sessions by uuid
 // ----------------------- ROUTES ----------------------- //
 
+// Chat endpoint: handles chat messages from clients
 app.post("/api/chat", async (req, resp) => {
   const userInput = req.body.userInput;
   const job = req.body.job;
   const uuid = req.body.uuid;
 
+  // Create a new chat session if one doesn't exist for this uuid
   if (!chatSessions.has(uuid)) {
-    chatSessions.set(uuid, new ChatSession());
+    chatSessions.set(uuid, new ChatSession(job));
   }
 
   const currentChatSession = chatSessions.get(uuid)
-  // console.log(currentChatSession) 
+  // Log the incoming message
   console.log(uuid,">",userInput)
+  // Send the message to the AI and get the response
   const AiResponse =  await currentChatSession._session.sendMessage({message: userInput})
+  // Log the AI's response
   console.log(uuid,"<",AiResponse.text)
 
+  // Send the AI's response back to the client
   resp.send(AiResponse.text)
-
-
 });
 
+// Test endpoint for direct AI model call (not chat session)
 app.post("/api/aiTest", async (req, resp) => {
   const userInput = req.body.userInput;
 
@@ -115,6 +119,7 @@ app.post("/api/aiTest", async (req, resp) => {
     contents: userInput,
   });
 
+  // Log and send the AI's response
   console.log(AiResponse.candidates[0].content.parts[0].text);
   resp.send(AiResponse.candidates[0].content.parts[0].text);
 });
@@ -131,7 +136,6 @@ app.post("/postTest", (req, resp) => {
 });
 
 // Start the Express server
-
 app
   .listen(PORT, () => {
     console.log(`server is listening at http://localhost:${PORT}`);
