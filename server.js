@@ -42,8 +42,12 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 const MODEL_NAME = "gemini-2.0-flash-001";
 
 class ChatSession {
-  constructor() {
+  constructor(newChatSession) {
+    this.lastContact = new Date();
+    this._session = newChatSession;
+  }
 
+  static async create() {
     const aiConfig = {
       responseMimeType: "text/plain",
       systemInstruction: [
@@ -53,25 +57,17 @@ class ChatSession {
       ],
     };
 
-    this.lastContact = new Date();
-    this._session = ai.chats.create({
-      model: MODEL_NAME
+    const newChatSession = await ai.chats.create({
+      model: MODEL_NAME,
+      config: aiConfig,
     });
-    console.log(this._session)
+
+    return new ChatSession(newChatSession);
   }
 
-
-  async sendMessage(userMessage){
-    return await this._session.sendMessage({message:userMessage})
-
+  async sendMessage(userMessage) {
+    return await this._session.sendMessage({ message: userMessage });
   }
-
-  get session() {
-    this.lastContact = new Date();
-    return this._session;
-  }
-
-
 }
 
 const chatSessions = new Map();
@@ -82,32 +78,24 @@ app.post("/api/chat", async (req, resp) => {
   const job = req.body.job;
   const uuid = req.body.uuid;
 
-  // if (!chatSessions.has(uuid)) {
-  //   chatSessions.set(uuid, new ChatSession());
-  // }
+  console.log(uuid)
 
-  // const userChatSession =  chatSessions.get(uuid)
+  if (!chatSessions.has(uuid)) {
+    const newChatSession = await ChatSession.create();
+    chatSessions.set(uuid, new ChatSession(newChatSession));
+  }
+
+  const userChatSession = chatSessions.get(uuid);
+  console.log(chatSessions)
   // console.log("from MAP: ",userChatSession)
-  // const responseFromAi = await userChatSession.sendMessage({ message: userInput });
-  // resp.send(responseFromAi.text)
-    const aiConfig = {
-      responseMimeType: "text/plain",
-      systemInstruction: [
-        {
-          text: `you are a bird and you have to work "caw caw" into every line `,
-        },
-      ],
-    };
+  const responseFromAi = await userChatSession.sendMessage({ message: userInput });
+  console.log("FROM AI: ", responseFromAi);
+  resp.send(responseFromAi.text);
 
-  const chat=ai.chats.create({
-      model: MODEL_NAME,
-      config: aiConfig
-    })
-
-    const AIR = await chat.sendMessage({
-      message:userInput
-    })
-    resp.send(AIR.text)
+  // const AIR = await chat.sendMessage({
+  //   message: userInput,
+  // });
+  // resp.send(AIR.text);
 });
 
 app.post("/api/aiTest", async (req, resp) => {
