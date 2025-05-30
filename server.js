@@ -9,7 +9,7 @@ const cors = require("cors"); // CORS middleware
 const PORT = process.env.SERVER_LISTEN_PORT; // Port from environment
 const assert = require("node:assert/strict"); // Assertion utility for debugging
 
-const { GoogleGenAI } = require( "@google/genai");
+const { GoogleGenAI } = require("@google/genai");
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 // --------------------- MIDDLEWARES -------------------- //
@@ -37,18 +37,16 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 
 // ----------------------- ROUTES ----------------------- //
 
-app.post("/api/aiTest", (req, resp) => {
+app.post("/api/aiTest", async (req, resp) => {
+  const userInput = req.body.userInput;
 
-  const userInput = req.body.userInput
+  const AiResponse = await ai.models.generateContent({
+    model: "gemini-2.0-flash-001",
+    contents: userInput,
+  });
 
-    ai.models.generateContent({
-      model: "gemini-2.0-flash-001",
-      contents: userInput,
-    }).then((AiResponse)=>{
-      
-      console.log(AiResponse.candidates[0].content.parts[0].text)
-      resp.send(AiResponse.candidates[0].content.parts[0].text)
-    });
+  console.log(AiResponse.candidates[0].content.parts[0].text);
+  resp.send(AiResponse.candidates[0].content.parts[0].text);
 });
 
 // Health check/test GET endpoint
@@ -63,6 +61,7 @@ app.post("/postTest", (req, resp) => {
 });
 
 // Start the Express server
+
 app
   .listen(PORT, () => {
     console.log(`server is listening at http://localhost:${PORT}`);
