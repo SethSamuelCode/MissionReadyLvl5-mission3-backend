@@ -4,5 +4,26 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "morgan": "^1.10.0"
-  }
+  },
+  "name": "missionreadylvl5-mission3-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SethSamuelCode/MissionReadyLvl5-mission3-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SethSamuelCode/MissionReadyLvl5-mission3-backend/issues"
+  },
+  "homepage": "https://github.com/SethSamuelCode/MissionReadyLvl5-mission3-backend#readme",
+  "description": ""
 }
