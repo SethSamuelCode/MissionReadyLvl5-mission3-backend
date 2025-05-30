@@ -39,13 +39,15 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 
 app.post("/api/aiTest", (req, resp) => {
 
+  const userInput = req.body.userInput
+
     ai.models.generateContent({
       model: "gemini-2.0-flash-001",
-      contents: "Why is the sky blue?",
+      contents: userInput,
     }).then((AiResponse)=>{
       
-      console.log(AiResponse)
-      resp.send(AiResponse)
+      console.log(AiResponse.candidates[0].content.parts[0].text)
+      resp.send(AiResponse.candidates[0].content.parts[0].text)
     });
 });
 
