@@ -1,28 +1,51 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-h1{
-    text-align: center;
+body {
+  width: 90%;
+  margin: auto;
 }
-#convoDisplayArea{
-    background-color: aqua;
+h1 {
+  text-align: center;
 }
-#userInputForm fieldset{
-    display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    /* align-items: center; */
-margin: auto;
-    width:90%;
-    button{
-        height: 50px;
-    }
+#jobNameContainer {
+  display: flex;
+  flex-direction: column;
+  input {
+    padding: 0.5em;
+  }
+}
+#convoDisplayArea {
+  margin: auto;
 
-    textarea{
-        padding:1em;
-        height: auto;
-        min-height: 8em;
-    }
+  .bubble{
+    padding: 1em;
+    border-radius: 10px;
+  }
+  .userInputBubble {
+    background-color: hsl(93, 100%, 50%);
+  }
+
+  .aiResponseBubble {
+    background-color: hsl(180, 100%, 50%);
+  }
+}
+#userInputForm fieldset {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+  margin: auto;
+  /* width:90%; */
+  button {
+    height: 50px;
+  }
+
+  textarea {
+    padding: 1em;
+    height: auto;
+    min-height: 8em;
+  }
 }
