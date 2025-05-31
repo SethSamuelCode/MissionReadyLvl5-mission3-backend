@@ -4,6 +4,7 @@ console.log("hello world");
 const textArea = document.querySelector("#convoDisplayArea")
 const userInputForm = document.querySelector("#userInputForm")
 const userTextInputArea = document.querySelector("#userInput")
+const jobDescriptionInput = document.querySelector("#jobDescription")
 userInputForm.addEventListener("submit",sendToAI)
 
 async function sendToAI(e){
@@ -18,12 +19,12 @@ async function sendToAI(e){
         'Content-Type': 'application/json'
     },
       body: JSON.stringify({
-        uuid:44334,
-        job:"dolphin",
+        uuid:44332,
+        job:jobDescriptionInput.value,
         userInput:userInput
       })  
     }
-    
+
 
     const aiResponse= await fetch("http://localhost:4000/api/chat",fetchOptions)
     const aiText = await aiResponse.json()
