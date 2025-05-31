@@ -25,7 +25,7 @@ app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 const corsConfigs = {
   origin: (incomingOrigin, allowedAccess) => {
     // Allow localhost (any port) and production domain
-    const allowedOrigins = [/^http:\/\/localhost:\d+$/,/^http:\/\/127.0.0.1:\d+/];
+    const allowedOrigins = [/^http:\/\/localhost/,/^http:\/\/127\.0\.0\.1:\d+/,/^http:\/\/192\.168\.0\.\d{1,3}/];
     // Allow requests with no origin (e.g., curl, server-to-server)
     if (!incomingOrigin || allowedOrigins.some((testOrigin) => testOrigin.test(incomingOrigin))) {
       allowedAccess(null, true); // Allow
