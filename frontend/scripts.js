@@ -23,10 +23,11 @@ async function sendToAI(e){
         userInput:userInput
       })  
     }
+    
 
     const aiResponse= await fetch("http://localhost:4000/api/chat",fetchOptions)
     const aiText = await aiResponse.json()
     console.log(aiText.response)
-    
+
 
 }
