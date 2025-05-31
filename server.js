@@ -25,7 +25,7 @@ app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 const corsConfigs = {
   origin: (incomingOrigin, allowedAccess) => {
     // Allow localhost (any port) and production domain
-    const allowedOrigins = [/^http:\/\/localhost:\d+$/];
+    const allowedOrigins = [/^http:\/\/localhost:\d+$/,/^http:\/\/127.0.0.1:\d+/];
     // Allow requests with no origin (e.g., curl, server-to-server)
     if (!incomingOrigin || allowedOrigins.some((testOrigin) => testOrigin.test(incomingOrigin))) {
       allowedAccess(null, true); // Allow
@@ -131,7 +131,7 @@ app.post("/api/chat", async (req, resp) => {
   console.log(uuid, "<", AiResponse.text);
 
   // Send the AI's response back to the client
-  resp.send(AiResponse.text);
+  resp.send({response:AiResponse.text});
 });
 
 // Test endpoint for direct AI model call (not chat session)
