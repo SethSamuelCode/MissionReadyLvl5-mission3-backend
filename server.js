@@ -96,7 +96,7 @@ setInterval(cleanUpOldChats,TIME_DELAY_IN_MS)
 // ----------------------- ROUTES ----------------------- //
 
 app.get("/api/uuid", (req, resp) => {
-  resp.send(uuidv7());
+  resp.send({uuid:uuidv7()});
 });
 
 // Chat endpoint: handles chat messages from clients
