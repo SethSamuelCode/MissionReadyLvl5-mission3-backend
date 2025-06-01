@@ -25,7 +25,7 @@ app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 const corsConfigs = {
   origin: (incomingOrigin, allowedAccess) => {
     // Allow localhost (any port) and production domain
-    const allowedOrigins = [/^http:\/\/localhost/,/^http:\/\/127\.0\.0\.1:\d+/,/^http:\/\/192\.168\.0\.\d{1,3}/];
+    const allowedOrigins = [/^http:\/\/localhost/,/^http:\/\/127\.0\.0\.1:\d+/,/^http:\/\/192\.168\.\d{1,3}\.\d{1,3}/];
     // Allow requests with no origin (e.g., curl, server-to-server)
     if (!incomingOrigin || allowedOrigins.some((testOrigin) => testOrigin.test(incomingOrigin))) {
       allowedAccess(null, true); // Allow
@@ -48,9 +48,14 @@ class ChatSession {
     // AI configuration for the chat session
     const aiConfig = {
       responseMimeType: "text/plain",
+      temperature:2,
       systemInstruction: [
         {
-          text: `you are a ${jobTitle} and you have to work this into every line `,
+          text: `You're an Interviewer for a company internally hiring for positions in ${jobTitle}.
+            Take on a professional tone.
+            You need to obey New Zealand employment law.
+            Begin the interview with a friendly hello and get the applicant to talk about themselves, work experience, previous achievements and goals.
+            The interview should be exactly six questions long.`,
         },
       ],
     };
