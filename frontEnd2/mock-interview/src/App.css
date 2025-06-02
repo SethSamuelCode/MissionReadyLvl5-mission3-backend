@@ -5,8 +5,9 @@
   justify-content: center;
   max-width: 800px;
   margin: auto;
-  background-color: #0073cf;
-  border-radius: 12px;
+  background-color: #f7f8f9;
+  border: 10px solid #0073cf;
+  border-radius: 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   gap: 1.5rem;
   font-family: 'Lato', sans-serif;
@@ -36,5 +37,62 @@
   cursor: pointer;
 }
 .start-button:hover {
+  background-color: #0056b3;
+}
+
+.user-input-container {
+  width: 35rem;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 2px solid #f8f5f6;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.user-input-container input {
+  padding: 8px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.user-input-container button {
+  padding: 8px 16px;
+  background-color: #8a0707;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.user-input-container button:hover {
+  background-color: #0056b3;
+}
+
+.user-input-container {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.user-input-container input {
+  padding: 8px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.user-input-container button {
+  padding: 8px 16px;
+  background-color: #8a0707;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.user-input-container button:hover {
   background-color: #0056b3;
 }
