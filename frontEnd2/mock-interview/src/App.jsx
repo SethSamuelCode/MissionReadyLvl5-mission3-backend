@@ -1,8 +1,8 @@
-import logo from './logo.svg'
+import InterviewApp from './InterviewApp'
 import './App.css'
 
 function App() {
-  return <h1> Hellooo World!</h1>
+  return <InterviewApp />
 }
 
 export default App
