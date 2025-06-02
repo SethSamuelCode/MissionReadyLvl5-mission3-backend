@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      dockerfile: front2.dockerfile
+    ports:
+      - 3000:3000
+  backend:
+    build:
+      dockerfile: node.dockerfile
+    ports:
+      - 4000:4000
