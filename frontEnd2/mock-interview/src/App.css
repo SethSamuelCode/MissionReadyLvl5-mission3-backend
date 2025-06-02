@@ -2,3 +2,12 @@
   width: 10rem;
   border-radius: 100%;
 }
+
+.job-title-container {
+  margin: 20px 0;
+}
+.job-title-container input {
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
+}
