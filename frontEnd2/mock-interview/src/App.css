@@ -96,3 +96,28 @@
 .user-input-container button:hover {
   background-color: #0056b3;
 }
+
+.chat-window {
+  height: 300px;
+  overflow-y: auto;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.chat-message {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.chat-message.user {
+  text-align: right;
+  color: #004085;
+}
+
+.chat-message.ai {
+  text-align: left;
+  color: #c0c6c2;
+}

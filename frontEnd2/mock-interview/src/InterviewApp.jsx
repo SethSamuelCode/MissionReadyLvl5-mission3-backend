@@ -3,10 +3,12 @@ import Logo from './components/LogoHeader.jsx'
 import JobTitleInput from './components/JobTitleInput.jsx'
 import StartButton from './components/StartButton.jsx'
 import UserInput from './components/UserInput.jsx'
+import ChatWindow from './components/ChatWindow.jsx'
 
 function InterviewApp() {
   const [jobTitle, setJobTitle] = useState('')
   const [userResponse, setUserResponse] = useState('')
+  const [chatHistory, setChatHistory] = useState([])
 
   const handleStart = async () => {
     if (!jobTitle.trim()) return alert('Please enter a job title')
@@ -28,8 +30,11 @@ function InterviewApp() {
           userResponse={userResponse}
           setUserResponse={setUserResponse}
           handleSubmit={handleSubmit}
+          chatHistory={chatHistory}
+          setChatHistory={setChatHistory}
         />
       }
+      <ChatWindow chatHistory={chatHistory} />
     </div>
   )
 }
