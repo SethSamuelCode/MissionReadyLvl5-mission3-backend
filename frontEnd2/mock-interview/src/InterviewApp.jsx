@@ -11,8 +11,32 @@ function InterviewApp() {
   const [chatHistory, setChatHistory] = useState([])
 
   const handleStart = async () => {
-    if (!jobTitle.trim()) return alert('Please enter a job title')
-  }
+    if (!jobTitle.trim()) {
+      alert('Please enter a job title')
+      return
+    }
+    try {
+      // Send user input to the backend to start the interview
+      const response = await fetch('http://localhost:3000/api/start-interview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ jobTitle, resetInterview: true }),
+      })
+      const data = await response.json()
+      if (data.aiResponse) {
+        setChatHistory([
+          { role: 'ai', text: data.aiResponse },
+        ])
+      } else {
+        console.log('No response from server')
+      }
+    } catch (error) {
+      console.error('Error starting interview:', error)
+      alert('Failed to start the interview. Please try again.')
+    }
+  }  
 
   const handleSubmit = async (e) => {
     e.preventDefault()
