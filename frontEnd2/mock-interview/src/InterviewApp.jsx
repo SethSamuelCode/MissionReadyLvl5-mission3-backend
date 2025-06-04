@@ -47,17 +47,21 @@ function InterviewApp() {
     }
     try {
       // Send user response to the backend
-      const response = await fetch('http://localhost:3000/api/interview', {
+      const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jobTitle, userResponse }),
+        body: JSON.stringify({
+          userInput: userResponse,
+          job: jobTitle,
+          uuid: uuid,
+        }),
       })
       const data = await response.json()
       // Update chat history with user response and AI response
       setChatHistory((prev) => [
         ...prev,
         { role: 'user', text: userResponse },
-        { role: 'ai', text: data.aiResponse },
+        { role: 'ai', text: data.response },
       ])
 
       setUserResponse('') // Clears user input after submission
