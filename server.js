@@ -25,7 +25,11 @@ app.use(express.json({ limit: "10MB" })); // Parse JSON bodies up to 10MB.
 const corsConfigs = {
   origin: (incomingOrigin, allowedAccess) => {
     // Allow localhost (any port) and production domain
-    const allowedOrigins = [/^http:\/\/localhost/,/^http:\/\/127\.0\.0\.1:\d+/,/^http:\/\/192\.168\.0\.\d{1,3}/];
+    const allowedOrigins = [
+      /^http:\/\/localhost/,
+      /^http:\/\/127\.0\.0\.1:\d+/,
+      /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}/,
+    ];
     // Allow requests with no origin (e.g., curl, server-to-server)
     if (!incomingOrigin || allowedOrigins.some((testOrigin) => testOrigin.test(incomingOrigin))) {
       allowedAccess(null, true); // Allow
@@ -40,7 +44,7 @@ app.use(cors(corsConfigs)); // Apply CORS policy
 
 // ----------------------- DEFINES ---------------------- //
 
-const MODEL_NAME = "gemini-2.0-flash-001";
+const MODEL_NAME = "gemini-2.5-flash-preview-05-20";
 
 // ChatSession class manages a single AI chat session
 class ChatSession {
@@ -48,9 +52,14 @@ class ChatSession {
     // AI configuration for the chat session
     const aiConfig = {
       responseMimeType: "text/plain",
+      temperature: 1,
+      top_p: 0.9, // not both
+
       systemInstruction: [
         {
-          text: `you are a ${jobTitle} and you have to work this into every line `,
+          text: `You are Tina from Turners cars and you are  responsible for conducting an interview for the position of ${jobTitle} at Turners cars. Start the interview by introducing yourself and asking "Welcome! Thank you for interviewing for the ${jobTitle} position at Turners Cars. To begin, please tell me about yourself”. You will ask at least 6 questions but no more than 10. 
+Each question should be open ended so the candidate can respond. You are to determine the candidates technical knowledge, soft skills and suitability in the company. You cannot ask questions about the person's sex, gender, relationship status, religious beliefs, skin color, race, ethnic background, disability, medical history, age, political ideologies, employment status or if they have children. You should ask the questions one at a time. If the candidate answers less than 10 words do not count this as an answered question and prompt for more information until you have a satisfactory answer. After a satisfactory answer you should ask the next question. After all questions have been asked, give the candidate feedback on how they did and give detailed responses to how they could do better. After that ask the candidate what area they would like to improve on and help them understand not only what needs to be done but why as well. 
+`,
         },
       ],
     };
@@ -70,16 +79,15 @@ class ChatSession {
     this.lastContact = Date.now();
     return await this._session.sendMessage({ message: userMessage });
   }
-
 }
 
 const chatSessions = new Map(); // Stores chat sessions by uuid
 
-const TIME_DELAY_IN_MS=1800000 //30mins
+const TIME_DELAY_IN_MS = 1800000; //30mins
 // const TIME_DELAY_IN_MS = 10000;
 function cleanUpOldChats() {
   if (!chatSessions.size) {
-    console.log("no chats to clear")
+    console.log("no chats to clear");
     return;
   }
   chatSessions.forEach((chatSession, uuid) => {
@@ -91,30 +99,30 @@ function cleanUpOldChats() {
   });
 }
 
-setInterval(cleanUpOldChats,TIME_DELAY_IN_MS)
+setInterval(cleanUpOldChats, TIME_DELAY_IN_MS);
 
 // ----------------------- ROUTES ----------------------- //
 
 app.get("/api/uuid", (req, resp) => {
-  resp.send({uuid:uuidv7()});
+  resp.send({ uuid: uuidv7() });
 });
 
 // Chat endpoint: handles chat messages from clients
 app.post("/api/chat", async (req, resp) => {
   // Check for empty payload
-  if(!req.body){
-    resp.status(400).send("please dont sent empty payloads")
-    return
+  if (!req.body) {
+    resp.status(400).send("please dont sent empty payloads");
+    return;
   }
   // Check for missing UUID
-  if(!req.body.uuid){
-    resp.status(400).send("please include a UUID")
-    return
+  if (!req.body.uuid) {
+    resp.status(400).send("please include a UUID");
+    return;
   }
 
   // Extract user input, job, and uuid from request body (default to empty string if missing)
-  const userInput = req.body.userInput? req.body.userInput:"";
-  const job = req.body.job?req.body.job:"";
+  const userInput = req.body.userInput ? req.body.userInput : "";
+  const job = req.body.job ? req.body.job : "";
   const uuid = req.body.uuid;
 
   // Create a new chat session if one doesn't exist for this uuid
@@ -131,7 +139,7 @@ app.post("/api/chat", async (req, resp) => {
   console.log(uuid, "<", AiResponse.text);
 
   // Send the AI's response back to the client
-  resp.send({response:AiResponse.text});
+  resp.send({ response: AiResponse.text });
 });
 
 // Test endpoint for direct AI model call (not chat session)
