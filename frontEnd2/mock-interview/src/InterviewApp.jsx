@@ -18,11 +18,11 @@ function InterviewApp() {
     }
     try {
       // Send user input to the backend to start the interview
-      const uuidResp = await fetch('http://localhost:3000/api/uuid')
+      const uuidResp = await fetch('http://localhost:4000/api/uuid')
       const uuidData = await uuidResp.json()
       setUuid(uuidData.uuid) // Stores the UUID for the session
 
-      const chatResp = await fetch('http://localhost:3000/api/chat', {
+      const chatResp = await fetch('http://localhost:4000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -47,7 +47,7 @@ function InterviewApp() {
     }
     try {
       // Send user response to the backend
-      const response = await fetch('http://localhost:3000/api/chat', {
+      const response = await fetch('http://localhost:4000/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
