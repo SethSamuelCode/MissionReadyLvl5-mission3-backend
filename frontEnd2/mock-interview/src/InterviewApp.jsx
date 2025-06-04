@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Logo from './components/LogoHeader.jsx'
 import JobTitleInput from './components/JobTitleInput.jsx'
 import StartButton from './components/StartButton.jsx'
