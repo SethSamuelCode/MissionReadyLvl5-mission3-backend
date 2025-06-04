@@ -76,17 +76,15 @@ function InterviewApp() {
       <Logo />
       <JobTitleInput jobTitle={jobTitle} setJobTitle={setJobTitle} />
 
-      {<StartButton onClick={handleStart} />}
-      {
-        <UserInput
-          userResponse={userResponse}
-          setUserResponse={setUserResponse}
-          handleSubmit={handleSubmit}
-          chatHistory={chatHistory}
-          setChatHistory={setChatHistory}
-        />
-      }
+      <StartButton onClick={handleStart} />
       <ChatWindow chatHistory={chatHistory} />
+      <UserInput
+        userResponse={userResponse}
+        setUserResponse={setUserResponse}
+        handleSubmit={handleSubmit}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+      />
     </div>
   )
 }
