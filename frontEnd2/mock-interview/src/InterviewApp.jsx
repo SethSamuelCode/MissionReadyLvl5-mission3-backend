@@ -9,6 +9,7 @@ function InterviewApp() {
   const [jobTitle, setJobTitle] = useState('')
   const [userResponse, setUserResponse] = useState('')
   const [chatHistory, setChatHistory] = useState([])
+  const [uuid, setUuid] = useState('')
 
   const handleStart = async () => {
     if (!jobTitle.trim()) {
@@ -17,25 +18,24 @@ function InterviewApp() {
     }
     try {
       // Send user input to the backend to start the interview
-      const response = await fetch(
-        'http://localhost:3000/api/start-interview',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ jobTitle, resetInterview: true }),
-        }
-      )
-      const data = await response.json()
-      if (data.aiResponse) {
-        setChatHistory([{ role: 'ai', text: data.aiResponse }])
-      } else {
-        console.log('No response from server')
-      }
+      const uuidResp = await fetch('http://localhost:3000/api/uuid')
+      const uuidData = await uuidResp.json()
+      setUuid(uuidData.uuid) // Stores the UUID for the session
+
+      const chatResp = await fetch('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userInput: 'start interview',
+          job: jobTitle,
+          uuid: uuidData.uuid,
+        }),
+      })
+      const chatData = await chatResp.json()
+      setChatHistory([{ role: 'ai', text: chatData.response }]) //AI response
     } catch (error) {
       console.error('Error starting interview:', error)
-      alert('Failed to start the interview. Please try again.')
+      alert('Failed to start interview. Please try again.')
     }
   }
 
