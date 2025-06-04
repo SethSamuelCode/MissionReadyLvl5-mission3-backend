@@ -27,8 +27,8 @@ This is an AI-powered interview assistant designed for Turners Cars to help cond
 1. Clone the repository
 2. Create a `.env.local` file with the following variables:
    ```
-   GEMINI_API_KEY=your_google_gemini_api_key
-   NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+    SERVER_LISTEN_PORT=4000
+    GEMINI_API_KEY={{ your_google_gemini_api_key }}
    ```
 
 ## Installation
