@@ -37,6 +37,7 @@ run containers
 
 ./runDockerCompose.sh
 ```
+go to [http://localhost][def] to use Project
 
 stop containers
 ```sh
@@ -76,3 +77,6 @@ Project Link: [Your Project Repository URL]
  * [Valentine for frontend and system prompt](https://github.com/valentine-ncube)
  * [Kent for system prompt](https://github.com/Kent-Wharerau)
  * [Rachel for system prompt](https://github.com/muddyducky)
+
+
+[def]: http://localhost
