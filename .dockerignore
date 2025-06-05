@@ -1,2 +1,4 @@
 node_modules
 nextjs
+**/mock-interview/build
+**/mock-interview/node_modules
