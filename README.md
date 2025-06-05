@@ -25,20 +25,27 @@ This is an AI-powered interview assistant designed for Turners Cars to help cond
 ## Environment Setup
 
 1. Clone the repository
-2. Create a `.env.local` file with the following variables:
+2. Create a `.env` file with the following variables:
    ```
     SERVER_LISTEN_PORT=4000
     GEMINI_API_KEY={{ your_google_gemini_api_key }}
    ```
 
-## Installation
+## Running locally with docker compose
+run containers
+```sh
 
-```bash
-# Install dependencies
-npm install
+./runDockerCompose.sh
+```
 
-# Run development server
-npm run dev
+stop containers
+```sh
+ctrl + c 
+```
+clean up
+
+```sh
+docker compose down 
 ```
 
 ## Deployment
@@ -63,3 +70,9 @@ The application can be deployed to any Node.js compatible hosting platform.
 
 
 Project Link: [Your Project Repository URL]
+
+## acknowledgements  
+
+ * [Valentine for frontend and system prompt](https://github.com/valentine-ncube)
+ * [Kent for system prompt](https://github.com/Kent-Wharerau)
+ * [Rachel for system prompt](https://github.com/muddyducky)
